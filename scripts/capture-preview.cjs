@@ -24,14 +24,27 @@ async function main() {
     await page.screenshot({ path: file });
     frame += 1;
   };
+  const hold = async (ms = 120, count = 1) => {
+    for (let i = 0; i < count; i++) {
+      await snap();
+      await page.waitForTimeout(ms);
+    }
+  };
+  const drag = async (x1, y1, x2, y2, steps = 16, wait = 35) => {
+    await page.mouse.move(x1, y1);
+    await page.mouse.down();
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      await page.mouse.move(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t);
+      await snap();
+      await page.waitForTimeout(wait);
+    }
+    await page.mouse.up();
+  };
 
-  // Idle intro frames.
-  for (let i = 0; i < 8; i++) {
-    await snap();
-    await page.waitForTimeout(100);
-  }
+  await hold(120, 8);
 
-  // Draw a smooth stroke.
+  await page.locator('[data-tool="freehand"]').click();
   await page.mouse.move(450, 300);
   await page.mouse.down();
   for (let i = 0; i <= 24; i++) {
@@ -43,37 +56,90 @@ async function main() {
     await page.waitForTimeout(35);
   }
   await page.mouse.up();
+  await hold(80, 3);
 
-  // Pan with space + drag.
-  await page.keyboard.down("Space");
-  await page.mouse.move(980, 380);
-  await page.mouse.down();
-  for (let i = 0; i <= 16; i++) {
-    const t = i / 16;
-    await page.mouse.move(980 - 260 * t, 380 - 90 * t);
-    await snap();
-    await page.waitForTimeout(40);
-  }
-  await page.mouse.up();
-  await page.keyboard.up("Space");
+  await page.locator('[data-tool="rectangle"]').click();
+  await drag(640, 200, 900, 390, 18, 30);
+  await hold(80, 3);
 
-  // Zoom in and out a little.
-  for (let i = 0; i < 5; i++) {
-    await page.mouse.wheel(0, -220);
-    await snap();
-    await page.waitForTimeout(90);
-  }
-  for (let i = 0; i < 3; i++) {
-    await page.mouse.wheel(0, 220);
-    await snap();
-    await page.waitForTimeout(90);
-  }
+  await page.locator('[data-tool="arrow"]').click();
+  await drag(320, 520, 600, 380, 12, 35);
+  await hold(80, 3);
 
-  // Outro hold.
-  for (let i = 0; i < 10; i++) {
-    await snap();
-    await page.waitForTimeout(100);
-  }
+  await page.locator('[data-tool="text"]').click();
+  await page.mouse.click(710, 440);
+  const textEditor = page.locator("#text-editor");
+  await textEditor.fill("Infinite Canvas Demo");
+  await page.keyboard.press("Control+Enter");
+  await hold(120, 4);
+
+  await page.locator("#color-menu-button").click();
+  await page.waitForTimeout(120);
+  await page.locator("#foreground-input").evaluate((el) => {
+    el.value = "#0ea5e9";
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await hold(90, 2);
+  await page.locator("#background-input").evaluate((el) => {
+    el.value = "#f8fafc";
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await hold(90, 2);
+  await page.locator("#fill-enabled").check();
+  await page.locator("#fill-input").evaluate((el) => {
+    el.value = "#bae6fd";
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await hold(90, 2);
+  await page.keyboard.press("Escape");
+  await hold(90, 2);
+
+  await page.locator('[data-tool="ellipse"]').click();
+  await drag(980, 470, 1210, 610, 16, 30);
+  await hold(90, 3);
+
+  await page.locator("#stroke-width").fill("7");
+  await hold(90, 2);
+  await page.locator('[data-tool="line"]').click();
+  await drag(240, 210, 470, 210, 10, 30);
+  await hold(90, 3);
+
+  await page.locator('[data-tool="hand"]').click();
+  await drag(960, 360, 720, 290, 14, 35);
+  await hold(90, 2);
+
+  await page.locator("#fit-content-button").click();
+  await hold(120, 3);
+  await page.locator("#focus-content-button").click();
+  await hold(120, 3);
+  await page.locator("#grid-toggle-button").click();
+  await hold(120, 3);
+  await page.locator("#grid-toggle-button").click();
+  await hold(90, 2);
+
+  await page.locator('[data-tool="select"]').click();
+  await page.mouse.click(860, 300);
+  await hold(90, 2);
+  await page.locator("#undo-button").click();
+  await hold(120, 3);
+  await page.locator("#redo-button").click();
+  await hold(120, 3);
+  await page.locator("#delete-button").click();
+  await hold(120, 3);
+
+  await page.locator("#menu-button").click();
+  await hold(150, 4);
+  await page.locator("#export-png-button").hover();
+  await hold(120, 2);
+  await page.locator("#export-svg-button").hover();
+  await hold(120, 2);
+  await page.locator("#copy-png-button").hover();
+  await hold(120, 2);
+  await page.keyboard.press("Escape");
+  await hold(120, 6);
 
   await browser.close();
   console.log(`Captured ${frame} frames in ${outDir}`);
