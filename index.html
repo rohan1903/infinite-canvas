@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infinite Canvas</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="toolbar" role="toolbar" aria-label="Canvas tools">
+      <div class="dock-group">
+        <button data-tool="select" class="tool-button icon-button" type="button" title="Select (V)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4.5 13.4 20l2.7-6.3L22 11.2 5 4.5Z" />
+            <path d="m14.4 14.4 4.9 4.9" />
+          </svg>
+        </button>
+        <button data-tool="hand" class="tool-button icon-button" type="button" title="Hand tool (H)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 13V6.5a1.5 1.5 0 1 1 3 0V12" />
+            <path d="M11 6V4a1.5 1.5 0 1 1 3 0v8" />
+            <path d="M14 6.5a1.5 1.5 0 1 1 3 0V12" />
+            <path d="M17 8a1.5 1.5 0 1 1 3 0v6.7A6.3 6.3 0 0 1 13.7 21h-1.5a6 6 0 0 1-5.1-2.9l-2.6-4a1.5 1.5 0 0 1 2.4-1.8L8 13" />
+          </svg>
+        </button>
+        <button data-tool="freehand" class="tool-button icon-button active" type="button" title="Draw (P)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 16 8.9-8.9a2.4 2.4 0 1 1 3.4 3.4L9.4 19.4a3.3 3.3 0 0 1-2.3 1H4.5v-2.6A3.3 3.3 0 0 1 6 16Z" />
+            <path d="m13.2 8.8 3.9 3.9" />
+          </svg>
+        </button>
+        <button data-tool="line" class="tool-button icon-button" type="button" title="Line (L)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 19 19 5" />
+          </svg>
+        </button>
+        <button data-tool="arrow" class="tool-button icon-button" type="button" title="Arrow (A)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 19 19 5" />
+            <path d="m13 5 6 0 0 6" />
+          </svg>
+        </button>
+        <button data-tool="rectangle" class="tool-button icon-button" type="button" title="Rectangle (R)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4.5" y="5.5" width="15" height="13" rx="1.5" />
+          </svg>
+        </button>
+        <button data-tool="ellipse" class="tool-button icon-button" type="button" title="Ellipse (C)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="12" rx="8" ry="6" />
+          </svg>
+        </button>
+        <button data-tool="eraser" class="tool-button icon-button" type="button" title="Eraser (E)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18.5 18.5h-9.7l-4.1-4.1a1.4 1.4 0 0 1 0-2l8.5-8.5a1.4 1.4 0 0 1 2 0l5 5a1.4 1.4 0 0 1 0 2l-7.6 7.6" />
+            <path d="m17.1 12.1-5.2-5.2" />
+          </svg>
+        </button>
+        <button data-tool="text" class="tool-button icon-button" type="button" title="Text (T)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 6h14" />
+            <path d="M12 6v12" />
+          </svg>
+        </button>
+      </div>
+      <div class="dock-group controls-group">
+        <button id="color-menu-button" class="tool-button color-summary-button" type="button" title="Color settings">
+          <span id="foreground-chip" class="color-chip foreground-chip"></span>
+          <span id="background-chip" class="color-chip background-chip"></span>
+          <span id="fill-chip" class="color-chip fill-chip"></span>
+        </button>
+        <input id="stroke-width" type="range" min="1" max="10" step="1" value="3" title="Stroke width" />
+      </div>
+      <div class="dock-group controls-group">
+        <button id="zoom-out-button" class="tool-button icon-button" type="button" title="Zoom out">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 12h12" />
+          </svg>
+        </button>
+        <button id="zoom-reset-button" class="tool-button zoom-readout" type="button" title="Reset zoom">100%</button>
+        <button id="zoom-in-button" class="tool-button icon-button" type="button" title="Zoom in">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 6v12M6 12h12" />
+          </svg>
+        </button>
+        <button id="focus-content-button" class="tool-button icon-button" type="button" title="Focus content">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v3M12 17v3M4 12h3M17 12h3" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </button>
+        <button id="fit-content-button" class="tool-button icon-button" type="button" title="Fit content">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+          </svg>
+        </button>
+        <button id="grid-toggle-button" class="tool-button icon-button active" type="button" title="Toggle grid">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 5h14v14H5z" />
+            <path d="M9.7 5v14M14.3 5v14M5 9.7h14M5 14.3h14" />
+          </svg>
+        </button>
+      </div>
+      <div class="dock-group">
+        <button id="menu-button" class="tool-button icon-button" type="button" title="Save and share">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5.5" r="1.3" />
+            <circle cx="12" cy="12" r="1.3" />
+            <circle cx="12" cy="18.5" r="1.3" />
+          </svg>
+        </button>
+        <button id="undo-button" class="tool-button icon-button" type="button" title="Undo (Ctrl/Cmd+Z)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m8 7-4 4 4 4" />
+            <path d="M20 11H4" />
+            <path d="M20 11a5 5 0 0 1-5 5h-2" />
+          </svg>
+        </button>
+        <button id="redo-button" class="tool-button icon-button" type="button" title="Redo (Ctrl/Cmd+Y)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m16 7 4 4-4 4" />
+            <path d="M4 11h16" />
+            <path d="M4 11a5 5 0 0 0 5 5h2" />
+          </svg>
+        </button>
+        <button id="delete-button" class="tool-button icon-button" type="button" title="Delete (Del/Backspace)">
+          <svg viewBox="0 0 24 24" class="tool-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7h16" />
+            <path d="M9 7V4h6v3" />
+            <path d="M7 7v12h10V7" />
+            <path d="M10 11v5M14 11v5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="file-menu" class="menu-panel hidden" role="menu" aria-label="Save and share menu">
+      <button id="save-scene-button" class="menu-item" type="button">Save scene (.json) - Ctrl/Cmd+S</button>
+      <button id="open-scene-button" class="menu-item" type="button">Open scene (.json) - Ctrl/Cmd+O</button>
+      <button id="export-png-button" class="menu-item" type="button">Export PNG (content)</button>
+      <button id="export-svg-button" class="menu-item" type="button">Export SVG (content)</button>
+      <button id="copy-png-button" class="menu-item" type="button">Copy PNG to clipboard</button>
+    </div>
+    <div id="color-menu" class="menu-panel hidden" role="menu" aria-label="Color menu">
+      <div class="color-menu-row">
+        <span class="color-menu-label">Foreground</span>
+        <button id="foreground-circle" class="color-circle-button" type="button" title="Pick foreground color"></button>
+        <input id="foreground-input" type="color" value="#1f2933" class="hidden-input" />
+      </div>
+      <div class="color-menu-row">
+        <span class="color-menu-label">Background</span>
+        <button id="background-circle" class="color-circle-button" type="button" title="Pick background color"></button>
+        <input id="background-input" type="color" value="#f7f8f8" class="hidden-input" />
+      </div>
+      <div class="color-menu-row">
+        <span class="color-menu-label">Fill</span>
+        <button id="fill-circle" class="color-circle-button" type="button" title="Pick fill color"></button>
+        <label class="fill-enable-inline">
+          <input id="fill-enabled" type="checkbox" />
+          Use
+        </label>
+        <input id="fill-input" type="color" value="#9fb8c6" class="hidden-input" />
+      </div>
+    </div>
+    <input id="open-scene-input" type="file" accept="application/json,.json" hidden />
+    <textarea id="text-editor" class="text-editor hidden" rows="1"></textarea>
+    <canvas id="canvas"></canvas>
+    <div id="zoom-indicator" aria-live="polite"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

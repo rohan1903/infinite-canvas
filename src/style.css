@@ -1,0 +1,255 @@
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #f7f8f8;
+  font-family: Inter, "Segoe UI", Roboto, sans-serif;
+}
+
+#canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+#toolbar {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  max-width: calc(100vw - 24px);
+  padding: 10px 12px;
+  border: 1px solid #d8dfe3;
+  border-radius: 16px;
+  background: rgba(248, 250, 250, 0.96);
+  box-shadow: 0 4px 14px rgba(15, 23, 28, 0.08);
+}
+
+.dock-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controls-group {
+  border-left: 1px solid #dbe2e6;
+  border-right: 1px solid #dbe2e6;
+  padding: 0 8px;
+}
+
+.tool-button {
+  border: 1px solid #c8d1d6;
+  background: #fbfcfc;
+  color: #1f2933;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tool-button:hover {
+  background: #eef3f6;
+}
+
+.tool-button.active {
+  border-color: #0e7490;
+  background: #dff3f8;
+}
+
+#stroke-width {
+  width: 120px;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  user-select: none;
+}
+
+.tool-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.tool-glyph {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.zoom-readout {
+  min-width: 62px;
+  height: 40px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#zoom-indicator {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  min-width: 52px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  background: rgba(20, 24, 28, 0.72);
+  color: #f3f5f7;
+  user-select: none;
+  pointer-events: none;
+}
+
+.menu-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #d4dde2;
+  border-radius: 12px;
+  background: rgba(250, 252, 252, 0.98);
+  box-shadow: 0 10px 20px rgba(15, 23, 28, 0.12);
+}
+
+.menu-item {
+  border: 1px solid #d6dee3;
+  background: #ffffff;
+  color: #1f2933;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.menu-item:hover {
+  background: #eef3f6;
+}
+
+.hidden {
+  display: none;
+}
+
+.color-summary-button {
+  width: 70px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.color-chip {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #8ea0ad;
+  display: inline-block;
+}
+
+.foreground-chip {
+  background: #1f2933;
+}
+
+.background-chip {
+  background: #f7f8f8;
+}
+
+.fill-chip {
+  background: #9fb8c6;
+}
+
+.color-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.color-menu-label {
+  min-width: 96px;
+  font-size: 14px;
+  color: #40505a;
+}
+
+.color-circle-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #9aaab4;
+  cursor: pointer;
+}
+
+#foreground-circle {
+  background: #1f2933;
+}
+
+#background-circle {
+  background: #f7f8f8;
+}
+
+#fill-circle {
+  background: #9fb8c6;
+}
+
+.fill-enable-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #4f5c65;
+}
+
+#color-menu {
+  min-width: 280px;
+  padding: 12px;
+}
+
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+.text-editor {
+  position: fixed;
+  z-index: 30;
+  min-width: 120px;
+  min-height: 28px;
+  padding: 2px 4px;
+  border: 1px dashed #9db0bc;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #1f2933;
+  font: 20px/1.2 Inter, "Segoe UI", Roboto, sans-serif;
+  resize: both;
+  overflow: auto;
+  outline: none;
+}
