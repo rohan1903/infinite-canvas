@@ -35,9 +35,7 @@ It focuses on responsive input, clean rendering, and a lightweight architecture.
 
 ## Preview
 
-Drop a GIF or screenshot into `docs/preview.gif` to showcase interactions:
-
-`![Infinite Canvas preview](./docs/preview.gif)`
+![Infinite Canvas preview](./docs/preview.gif)
 
 ## Quick Start
 
